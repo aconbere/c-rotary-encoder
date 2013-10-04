@@ -1,6 +1,11 @@
 #include "rotary_encoder.h"
+#include "dbg.h"
+
+#include <stdlib.h>
+#include <stdio.h>
 
 #if defined(ARDUINO)
+#include <Arduino.h>
 #elif defined(unix) || defined(__unix__) || defined(__unix) || (defined(__APPLE__) && defined(__MACH__))
 #define PINC 0
 #define INPUT 1
@@ -11,6 +16,18 @@ void digitalWrite(uint8_t pin, uint8_t value) {}
 # error Unknown platform, cannot define getCurrentMilliseconds.
 #endif
 
+// all the possible 2bit states. Maps to potential read values off of the
+// encoder pins. 
+//
+// ex: [0001] -> 2 -> -1
+// ex: [0011] -> 5 -> 1
+//
+// 1 represents a turn in one direction
+// -1 a turn in the other direction
+// 0 represents an invalid state (maybe a bad conection etc.) in those cases
+// we pretend we have moved nowhere!
+static int8_t RotaryEncoder_states[] = {0,-1,1,0,1,0,0,-1,-1,0,0,1,0,1,-1,0};
+
 void RotaryEncoder_setup(uint8_t pina, uint8_t pinb) {
   pinMode(pina, INPUT);
   digitalWrite(pina, HIGH);
@@ -20,7 +37,7 @@ void RotaryEncoder_setup(uint8_t pina, uint8_t pinb) {
 }
 
 RotaryEncoder *RotaryEncoder_create(uint8_t mask) {
-  RotaryEncoder *encoder = calloc(1, sizeof(RotaryEncoder));
+  RotaryEncoder *encoder = (RotaryEncoder *)calloc(1, sizeof(RotaryEncoder));
   encoder->mask = mask;
   encoder->value = 0;
   check_mem(encoder);
