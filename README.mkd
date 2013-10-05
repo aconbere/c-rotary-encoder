@@ -1,3 +1,3 @@
-# PID Silvia
+# Rotary Encoder
 
-Control the silvia's brew temperature with an arduino PID
+Read a rotary encoder from an arduino

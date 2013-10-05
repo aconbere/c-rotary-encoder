@@ -26,7 +26,7 @@ void digitalWrite(uint8_t pin, uint8_t value) {}
 // -1 a turn in the other direction
 // 0 represents an invalid state (maybe a bad conection etc.) in those cases
 // we pretend we have moved nowhere!
-static int8_t RotaryEncoder_states[] = {0,-1,1,0,1,0,0,-1,-1,0,0,1,0,1,-1,0};
+static int8_t RotaryEncoder_states[] = {0,1,-1,0,-1,0,0,1,1,0,0,-1,0,-1,1,0};
 
 void RotaryEncoder_setup(uint8_t pina, uint8_t pinb) {
   pinMode(pina, INPUT);
